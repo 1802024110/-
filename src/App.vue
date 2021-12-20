@@ -21,7 +21,6 @@
     <v-btn
       class="rounded-pill"
       color="primary"
-      @click="download"
       >下载</v-btn>
     </div>
   </v-app>
@@ -32,21 +31,41 @@ import axios from 'axios'
 export default {
   data() {
     return {
-      text: "#轻视频# https://bbq.bilibili.com/video/?id=1635755626020555348&shu=gn871",
+      text: "",
+      downloadUrl: '',
     }
   },
-  computed: {
-    downloadUrl() {
+  watch: {
+    text(val) {
+      if(val==''){
+        this.downloadUrl = ''
+        return ''
+      }
       // 正则表达式
-      let reg = /https:\/\/bbq.bilibili.com\/video\/\?id=(\d+)&shu=gn871/;
+      let reg = /id=(\d+)&/;
       let url = this.text;
       let id = url.match(reg)[1];
-      // axiso访问
-      axios.get(`https://bbq.bilibili.com/bbq/app-bbq/sv/detail?svid=${id}&version=1.3.0&platform=h5`).then(res => {
+      this.downloadUrl = id
+      axios.get(`http://bbq.bilibili.com/bbq/app-bbq/sv/detail?svid=${id}&version=1.3.0&platform=h5`).then(res => {
         console.log(res.data);
       })
-      return id;
     }
   },
+/*   computed: {
+    downloadUrl() {
+      if(this.text==''){
+        return ''
+      }
+      // 正则表达式
+      let reg = /id=(\d+)&/;
+      let url = this.text;
+      let id = url.match(reg)[1];
+      // // axiso访问
+      // axios.get(`https://bbq.bilibili.com/bbq/app-bbq/sv/detail?svid=${id}&version=1.3.0&platform=h5`).then(res => {
+      //   console.log(res.data);
+      // })
+      return id;
+    }
+  }, */
 };
 </script>
