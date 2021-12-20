@@ -1,6 +1,10 @@
 <template>
   <v-app>
-    <div  style="width:300px;margin:50% auto">
+    <div  style="width:300px;margin:auto">
+    <!-- 视频 -->
+    <video style="width:100%;height:50vh" v-show="downloadUrl" :src="downloadUrl" controls="controls">
+    </video>
+    <!-- 视频结束 -->
     <v-text-field
     class="rounded-pill"
           solo
@@ -20,7 +24,7 @@
   <!-- 下载视频 -->
     <a :href="downloadUrl">
       <v-btn
-      v-if="downloadUrl"
+      v-show="downloadUrl"
       class="rounded-pill"
       color="primary"
       >下载</v-btn>
