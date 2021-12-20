@@ -18,10 +18,13 @@
           :value='downloadUrl'
         ></v-textarea>
   <!-- 下载视频 -->
-    <v-btn
+    <a :href="downloadUrl">
+      <v-btn
+      v-if="downloadUrl"
       class="rounded-pill"
       color="primary"
       >下载</v-btn>
+    </a>
     </div>
   </v-app>
 </template>
@@ -35,6 +38,10 @@ export default {
       downloadUrl: '',
     }
   },
+  methods: {
+    // 点击下载事件
+
+  },
   watch: {
     text(val) {
       if(val==''){
@@ -45,27 +52,22 @@ export default {
       let reg = /id=(\d+)&/;
       let url = this.text;
       let id = url.match(reg)[1];
-      this.downloadUrl = id
-      axios.get(`http://bbq.bilibili.com/bbq/app-bbq/sv/detail?svid=${id}&version=1.3.0&platform=h5`).then(res => {
-        console.log(res.data);
+      axios.get(`https://api.nodream.ml/api/qsp?id=${id}`).then(res => {
+        // 返回的status如果是200，则说明请求成功
+        if (res.status === 200) {
+          this.downloadUrl = res.data.data.data.play.url
+        }
+      }).catch(err => {
+        // 请求失败,再次请求
+        axios.get(`https://api.nodream.ml/api/qsp?id=${id}`).then(res => {
+        // 返回的status如果是200，则说明请求成功
+        if (res.status === 200) {
+          this.downloadUrl = res.data.data.data.play.url
+        }
+      })
+        console.log(err);
       })
     }
-  },
-/*   computed: {
-    downloadUrl() {
-      if(this.text==''){
-        return ''
-      }
-      // 正则表达式
-      let reg = /id=(\d+)&/;
-      let url = this.text;
-      let id = url.match(reg)[1];
-      // // axiso访问
-      // axios.get(`https://bbq.bilibili.com/bbq/app-bbq/sv/detail?svid=${id}&version=1.3.0&platform=h5`).then(res => {
-      //   console.log(res.data);
-      // })
-      return id;
-    }
-  }, */
+  }
 };
 </script>
